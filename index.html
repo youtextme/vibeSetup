@@ -385,7 +385,43 @@
             <th class="repo">Repository</th>
           </tr>
         </thead>
-        <tbody id="rows"></tbody>
+        <tbody id="rows">
+          <tr>
+            <td class="num">1</td>
+            <td class="job">How agents ship</td>
+            <td class="repo"><a href="https://github.com/obra/superpowers" rel="noopener">Superpowers</a><span class="stars" data-repo="obra/superpowers">273k ★</span></td>
+          </tr>
+          <tr>
+            <td class="num">2</td>
+            <td class="job">Production engineering skills</td>
+            <td class="repo"><a href="https://github.com/addyosmani/agent-skills" rel="noopener">Agent Skills</a><span class="stars" data-repo="addyosmani/agent-skills">87.9k ★</span></td>
+          </tr>
+          <tr>
+            <td class="num">3</td>
+            <td class="job">Clarify requirements first</td>
+            <td class="repo"><a href="https://github.com/mattpocock/skills" rel="noopener">Grill Me</a><span class="stars" data-repo="mattpocock/skills">220k ★</span></td>
+          </tr>
+          <tr>
+            <td class="num">4</td>
+            <td class="job">Design and testing</td>
+            <td class="repo"><a href="https://github.com/anthropics/skills" rel="noopener">Anthropic Skills</a><span class="stars" data-repo="anthropics/skills">170k ★</span></td>
+          </tr>
+          <tr>
+            <td class="num">5</td>
+            <td class="job">Loop until done</td>
+            <td class="repo"><a href="https://github.com/snarktank/ralph" rel="noopener">Ralph</a><span class="stars" data-repo="snarktank/ralph">21.5k ★</span></td>
+          </tr>
+          <tr>
+            <td class="num">6</td>
+            <td class="job">Catch store rejects</td>
+            <td class="repo"><a href="https://github.com/safaiyeh/app-store-review-skill" rel="noopener">App Store</a><span class="stars" data-repo="safaiyeh/app-store-review-skill">278 ★</span></td>
+          </tr>
+          <tr>
+            <td class="num">7</td>
+            <td class="job">Track agent spend</td>
+            <td class="repo"><a href="https://github.com/ccusage/ccusage" rel="noopener">ccusage</a><span class="stars" data-repo="ccusage/ccusage">18k ★</span></td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </section>
@@ -461,7 +497,7 @@
   <footer class="bleed">VibeSetup pins community kits. Stars are live from GitHub. Skills stay pinned; oracles can move.</footer>
 
   <script>
-    const PROMPT = `Install VibeSetup on this computer. Read https://raw.githubusercontent.com/youtextme/vibeSetup/main/INSTALL.md and follow it exactly. Detect my OS and whether this is Cursor, Devin, OpenClaw, Claude Code, or another agent. Pin the kit. Write a tiny frozen AGENTS.md. Enable Ralph with a max-iteration cap. Do not ask questions unless a paid secret is missing. When finished, list what you installed and where.`;
+    const PROMPT = `Install VibeSetup on this computer. Read INSTALL.md from https://raw.githubusercontent.com/youtextme/vibeSetup/main/INSTALL.md or from a local vibeSetup folder. Follow it exactly. Detect my OS and whether this is Cursor, Devin, OpenClaw, Claude Code, or another agent. Pin the kit. Write a tiny frozen AGENTS.md. Enable Ralph with a max-iteration cap. Do not ask questions unless a paid secret is missing. When finished, list what you installed and where.`;
 
     const FALLBACK_KIT = {
       repos: [
@@ -507,10 +543,11 @@
       body.innerHTML = repos.map((row) => {
         const key = row.owner + "/" + row.repo;
         const n = counts[key];
+        const star = typeof n === "number" ? fmt(n) + " ★" : "";
         return `<tr>
           <td class="num">${row.n}</td>
           <td class="job">${row.job}</td>
-          <td class="repo"><a href="${row.url}" rel="noopener">${row.name}</a><span class="stars" data-repo="${key}">${fmt(n)} ★</span></td>
+          <td class="repo"><a href="${row.url}" rel="noopener">${row.name}</a>${star ? `<span class="stars" data-repo="${key}">${star}</span>` : ""}</td>
         </tr>`;
       }).join("");
       const live = document.getElementById("live");
