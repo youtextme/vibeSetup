@@ -1,0 +1,6 @@
+---
+description: Tiny always-on constitution. Do not grow this file.
+alwaysApply: true
+---
+
+Follow AGENTS.md and VibeSetup. Skills on demand from ~/.agents/skills. Tests define done. Ralph only if .cursor/ralph/active exists (cap 12).
