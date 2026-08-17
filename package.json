@@ -1,0 +1,9 @@
+{
+  "name": "vibesetup",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/doctor.test.mjs",
+    "doctor": "node scripts/doctor.mjs"
+  }
+}
