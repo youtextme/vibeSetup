@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VibeSetup</title>
+  <meta name="description" content="One prompt. Any machine. Cursor, Devin, OpenClaw, and Claude install the same pinned kit and run like objective runners." />
+  <meta property="og:title" content="VibeSetup" />
+  <meta property="og:description" content="One prompt. Any machine. Agents that finish." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <style>
+    :root {
+      --bleed: clamp(28px, 5.5vw, 96px);
+      --fg: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #d2d2d7;
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --blue: #0071e3;
+      --blue-press: #0077ed;
+      --nav-h: 58px;
+      --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { animation: none !important; transition: none !important; }
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.47059;
+      letter-spacing: -0.022em;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    .bleed {
+      padding-left: var(--bleed);
+      padding-right: var(--bleed);
+      width: 100%;
+    }
+
+    /* —— Nav: three equal targets, full width —— */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: var(--nav-h);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: rgba(245, 245, 247, 0.78);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.016em;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .nav a:hover { color: var(--fg); }
+    .nav a.is-on {
+      color: var(--fg);
+      border-bottom-color: var(--fg);
+    }
+
+    section {
+      scroll-margin-top: calc(var(--nav-h) + 12px);
+    }
+
+    .kicker {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(56px, 9vw, 120px);
+      font-weight: 600;
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+    }
+
+    h2 {
+      margin: 0 0 28px;
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+    }
+
+    .lede {
+      margin: 28px 0 0;
+      max-width: 42em;
+      font-size: clamp(21px, 2.2vw, 28px);
+      line-height: 1.285;
+      font-weight: 400;
+      letter-spacing: 0.011em;
+      color: var(--fg);
+    }
+    .lede.muted { color: var(--muted); }
+
+    /* —— Describe —— */
+    #describe { padding: 72px 0 96px; }
+
+    .prompt {
+      margin-top: 56px;
+      background: var(--card);
+      border-radius: 22px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .prompt-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--line);
+    }
+    .prompt-bar strong {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .copy {
+      appearance: none;
+      border: 0;
+      background: var(--blue);
+      color: #fff;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      padding: 8px 16px;
+      border-radius: 980px;
+      cursor: pointer;
+    }
+    .copy:hover { background: var(--blue-press); }
+    .copy.is-done { background: #1d1d1f; }
+    .prompt pre {
+      margin: 0;
+      padding: 32px 28px 36px;
+      white-space: pre-wrap;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: clamp(15px, 1.35vw, 19px);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+    }
+
+    .hosts {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .host {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 28px 26px 30px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
+      min-height: 168px;
+    }
+    .host h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .host p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    /* —— Kit —— */
+    #kit {
+      padding: 88px 0 96px;
+      background: #fff;
+    }
+    .kit-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .live {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+    .live b { color: var(--fg); font-weight: 500; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    thead th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 0 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    tbody td {
+      padding: 28px 16px 28px 0;
+      border-bottom: 1px solid var(--line);
+      vertical-align: baseline;
+    }
+    tbody tr:last-child td { border-bottom: 0; }
+    .num {
+      width: 7%;
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+      font-size: clamp(22px, 2vw, 28px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+    }
+    .job {
+      width: 46%;
+      font-size: clamp(22px, 2.4vw, 32px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+    .repo {
+      width: 47%;
+    }
+    .repo a {
+      font-size: clamp(22px, 2.4vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      color: var(--blue);
+    }
+    .stars {
+      display: inline-block;
+      margin-left: 14px;
+      font-size: 17px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .stars::before { content: ""; }
+
+    /* —— Details —— */
+    #details { padding: 88px 0 120px; }
+    .detail {
+      display: grid;
+      grid-template-columns: 7% 93%;
+      gap: 0 16px;
+      padding: 40px 0;
+      border-top: 1px solid var(--line);
+    }
+    .detail:last-child { border-bottom: 1px solid var(--line); }
+    .detail .n {
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+      font-size: 22px;
+      font-weight: 500;
+      padding-top: 6px;
+    }
+    .detail h3 {
+      margin: 0 0 6px;
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .detail .meta {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .detail p {
+      margin: 0;
+      max-width: 58em;
+      font-size: clamp(17px, 1.45vw, 21px);
+      line-height: 1.47;
+      letter-spacing: -0.016em;
+    }
+
+    footer {
+      padding: 28px 0 48px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 820px) {
+      #describe { padding-top: 48px; }
+      .hosts { grid-template-columns: 1fr; }
+      .num, .detail { grid-template-columns: 1fr; }
+      .detail .n { margin-bottom: 8px; }
+      tbody td { padding: 20px 12px 20px 0; }
+      .job, .repo a { font-size: 20px; }
+      .stars { display: block; margin: 8px 0 0; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Sections">
+    <a href="#describe" data-sec="describe">Describe</a>
+    <a href="#kit" data-sec="kit">Kit</a>
+    <a href="#details" data-sec="details">Details</a>
+  </nav>
+
+  <section id="describe" class="bleed">
+    <span class="kicker">Describe</span>
+    <h1>VibeSetup.</h1>
+    <p class="lede">One prompt. Any machine. Cursor, Devin, OpenClaw, and Claude install the same pinned kit and run like objective runners — not chatbots that forget the company every morning.</p>
+    <p class="lede muted">Paste this. The agent reads your OS and the tool you are in. It pins the kit, writes a tiny frozen constitution, and turns on a capped Ralph loop. After that you only give objectives.</p>
+
+    <div class="prompt">
+      <div class="prompt-bar">
+        <strong>The prompt</strong>
+        <button class="copy" type="button" id="copy">Copy</button>
+      </div>
+      <pre id="prompt"></pre>
+    </div>
+
+    <div class="hosts">
+      <article class="host">
+        <h3>Cursor</h3>
+        <p>Open Agent chat. Paste. Let it detect Windows or Mac and write <em>.cursor</em> skills, a tiny rule, and the Ralph stop hook.</p>
+      </article>
+      <article class="host">
+        <h3>Devin</h3>
+        <p>New session. Paste as the first message. It should set Knowledge named lint and test, then a Ship playbook — no bash while-loop.</p>
+      </article>
+      <article class="host">
+        <h3>OpenClaw</h3>
+        <p>Message the bot, or drop it in as a standing order. Short AGENTS.md, skills on the side, heartbeat capped. Same kit as Cursor.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="kit">
+    <div class="bleed">
+      <div class="kit-head">
+        <div>
+          <span class="kicker">Kit</span>
+          <h2>The kit.</h2>
+        </div>
+        <p class="live" id="live">Stars load live from GitHub.</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th class="job">Job</th>
+            <th class="repo">Repository</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="details" class="bleed">
+    <span class="kicker">Detailed Description</span>
+    <h2>What you actually get.</h2>
+
+    <article class="detail" id="d-1">
+      <div class="n">1</div>
+      <div>
+        <h3>How agents ship</h3>
+        <p class="meta"><a href="https://github.com/obra/superpowers">Superpowers</a></p>
+        <p>You get a working way to ship with an agent instead of chatting in circles. Superpowers is a software methodology: clarify the idea, write a plan, fail a test first, implement, then verify before anyone says done. Cursor loads it as a skill when you ask for a feature. Claude Code installs it as a plugin. Devin should be pointed at the same rules in Knowledge so it cannot skip tests. OpenClaw keeps a short AGENTS.md and opens the skill only when building. The point is not a louder personality. The point is the agent cannot honestly call the work finished until the checks pass. Use this as the only methodology pack — a second TDD skill will fight it.</p>
+      </div>
+    </article>
+
+    <article class="detail" id="d-2">
+      <div class="n">2</div>
+      <div>
+        <h3>Production engineering skills</h3>
+        <p class="meta"><a href="https://github.com/addyosmani/agent-skills">Agent Skills</a></p>
+        <p>You get production engineering habits packaged for agents: security, CI, observability, shipping, docs, and UI engineering. This is the specialty toolkit, not a second methodology. Cursor copies skills into .cursor/skills and only opens the one that matches the task. Claude uses the same files. Devin Knowledge should link to those files, not paste the essays. OpenClaw loads the folder through extraDirs or workspace skills. A vibe coder gets a security pass and a real pipeline without becoming a staff engineer overnight. When the task is add login, the agent should open the security skill, not the whole pack. Keep Superpowers as the loop. Let this pack own CI, observability, and shipping reviews. Do not paste these bodies into always-on rules. That wrecks prompt cache and raises the bill.</p>
+      </div>
+    </article>
+
+    <article class="detail" id="d-3">
+      <div class="n">3</div>
+      <div>
+        <h3>Clarify requirements first</h3>
+        <p class="meta"><a href="https://github.com/mattpocock/skills">Grill Me</a></p>
+        <p>You get one hard interview before any code. grill-me asks what done means until it is specific enough to test. That interview becomes a short spec on disk. Cursor runs it once per capability. Claude Code uses the skill when you start a feature. Devin should ask the same questions in the first session and write the answers into the repo. OpenClaw stores the result in the workspace, not in chat. This is how you stop restating NFRs every morning. The agent cannot exceed a requirement that was never written. After grill-me you should have a file you can point at for the rest of the week. Skip a second interview pack. One grill is the exam.</p>
+      </div>
+    </article>
+
+    <article class="detail" id="d-4">
+      <div class="n">4</div>
+      <div>
+        <h3>Design and testing</h3>
+        <p class="meta"><a href="https://github.com/anthropics/skills">Anthropic Skills</a></p>
+        <p>You get Anthropic's own examples for design and browser testing, plus the public Agent Skills spec. frontend-design fights generic AI UI. webapp-testing makes the agent click through the product instead of guessing. Cursor and Claude load those two skills on demand. Devin can use the testing skill as the definition of looks right. OpenClaw should not dump the whole examples repo into AGENTS.md. Only point at the skills you actually use. You are not installing Anthropic as your company. You are borrowing two files that raise the visual and test bar. This is how a vibe coder's app stops looking like a default dashboard. Leave the toy skills out of the always-on set.</p>
+      </div>
+    </article>
+
+    <article class="detail" id="d-5">
+      <div class="n">5</div>
+      <div>
+        <h3>Loop until done</h3>
+        <p class="meta"><a href="https://github.com/snarktank/ralph">Ralph</a></p>
+        <p>You get the outer loop. Skills teach how. Ralph keeps going. Each pass is a fresh context. Memory is git, prd.json, and progress.txt, not the chat window. Cursor uses a stop hook that sends the agent back until tests pass or max-iterations hits. Claude has an official Ralph plugin. Devin is already long-running: attach tests as the finish line. OpenClaw uses a heartbeat or standing order with a cap. Write stories to prd.json so a new context can pick the next incomplete item. Twelve iterations is enough for a capability. If it is still red, stop and read the failures. Always set a max. Uncapped Ralph is a money fire. This is the missing engine that turns a chat box into an objective runner you can leave running.</p>
+      </div>
+    </article>
+
+    <article class="detail" id="d-6">
+      <div class="n">6</div>
+      <div>
+        <h3>Catch store rejects</h3>
+        <p class="meta"><a href="https://github.com/safaiyeh/app-store-review-skill">App Store</a></p>
+        <p>You get a pre-submit audit against Apple's review guidelines and the rejection patterns that kill first submissions: privacy, payments, incomplete features, misleading claims. Cursor and Claude load it when you say you are shipping to the store. Devin should run it before any ready-for-TestFlight claim. OpenClaw can run it on a heartbeat before release notes. Play Store risk is similar: incomplete listings, broken in-app purchase, missing account deletion. If you ship both stores, still start with this skill and add Play oracles to docs later. Skip this pack if you are not shipping a store binary. It does not create your privacy policy URL or developer account. It does stop you from walking into Guideline 2.1 and 5.1.1 with a smile.</p>
+      </div>
+    </article>
+
+    <article class="detail" id="d-7">
+      <div class="n">7</div>
+      <div>
+        <h3>Track agent spend</h3>
+        <p class="meta"><a href="https://github.com/ccusage/ccusage">ccusage</a></p>
+        <p>You get a local picture of what agents are costing. ccusage reads logs from Claude, OpenClaw, and related tools so spend is visible without a mystery SaaS that rewrites your prompt. Cursor has its own usage UI; still run ccusage for CLI hosts. Combined with a tiny frozen AGENTS.md, prompt cache actually hits and repeated input drops to about a tenth. Devin spend lives in Devin's dashboard. Plan on a cheaper model, implement on a frontier model, and cap Ralph. A huge always-on rule file looks helpful and then silently doubles the bill because the cache prefix changes. VibeSetup keeps the constitution tiny so the expensive tokens are the work, not the lecture. That is the cost toolkit, not another skill dump at the top of the prompt.</p>
+      </div>
+    </article>
+  </section>
+
+  <footer class="bleed">VibeSetup pins community kits. Stars are live from GitHub. Skills stay pinned; oracles can move.</footer>
+
+  <script>
+    const PROMPT = `Install VibeSetup on this computer. Read https://raw.githubusercontent.com/youtextme/vibeSetup/main/INSTALL.md and follow it exactly. Detect my OS and whether this is Cursor, Devin, OpenClaw, Claude Code, or another agent. Pin the kit. Write a tiny frozen AGENTS.md. Enable Ralph with a max-iteration cap. Do not ask questions unless a paid secret is missing. When finished, list what you installed and where.`;
+
+    const FALLBACK_KIT = {
+      repos: [
+        { n: 1, job: "How agents ship", name: "Superpowers", owner: "obra", repo: "superpowers", url: "https://github.com/obra/superpowers" },
+        { n: 2, job: "Production engineering skills", name: "Agent Skills", owner: "addyosmani", repo: "agent-skills", url: "https://github.com/addyosmani/agent-skills" },
+        { n: 3, job: "Clarify requirements first", name: "Grill Me", owner: "mattpocock", repo: "skills", url: "https://github.com/mattpocock/skills" },
+        { n: 4, job: "Design and testing", name: "Anthropic Skills", owner: "anthropics", repo: "skills", url: "https://github.com/anthropics/skills" },
+        { n: 5, job: "Loop until done", name: "Ralph", owner: "snarktank", repo: "ralph", url: "https://github.com/snarktank/ralph" },
+        { n: 6, job: "Catch store rejects", name: "App Store", owner: "safaiyeh", repo: "app-store-review-skill", url: "https://github.com/safaiyeh/app-store-review-skill" },
+        { n: 7, job: "Track agent spend", name: "ccusage", owner: "ccusage", repo: "ccusage", url: "https://github.com/ccusage/ccusage" }
+      ]
+    };
+
+    document.getElementById("prompt").textContent = PROMPT;
+
+    const copyBtn = document.getElementById("copy");
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(PROMPT);
+      } catch {
+        const t = document.createElement("textarea");
+        t.value = PROMPT;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand("copy");
+        t.remove();
+      }
+      copyBtn.textContent = "Copied";
+      copyBtn.classList.add("is-done");
+      setTimeout(() => {
+        copyBtn.textContent = "Copy";
+        copyBtn.classList.remove("is-done");
+      }, 1800);
+    });
+
+    const fmt = (n) => {
+      if (typeof n !== "number" || Number.isNaN(n)) return "—";
+      return new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+    };
+
+    const render = (repos, counts, source) => {
+      const body = document.getElementById("rows");
+      body.innerHTML = repos.map((row) => {
+        const key = row.owner + "/" + row.repo;
+        const n = counts[key];
+        return `<tr>
+          <td class="num">${row.n}</td>
+          <td class="job">${row.job}</td>
+          <td class="repo"><a href="${row.url}" rel="noopener">${row.name}</a><span class="stars" data-repo="${key}">${fmt(n)} ★</span></td>
+        </tr>`;
+      }).join("");
+      const live = document.getElementById("live");
+      live.innerHTML = source === "live"
+        ? `<b>Live</b> from GitHub · just now`
+        : `<b>Cached</b> GitHub stars · ${source}`;
+    };
+
+    const fetchJson = (url) => fetch(url, { cache: "no-store" }).then((r) => {
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    });
+
+    (async () => {
+      let kit = FALLBACK_KIT;
+      let counts = {};
+      let source = "fallback";
+      try {
+        kit = await fetchJson("./kit.json");
+      } catch { /* embedded */ }
+      try {
+        const cached = await fetchJson("./stars.json");
+        counts = cached.counts || {};
+        source = cached.updated ? cached.updated.slice(0, 10) : "cache";
+      } catch { /* none */ }
+
+      render(kit.repos, counts, source);
+
+      const liveCounts = { ...counts };
+      let liveHits = 0;
+      await Promise.all(kit.repos.map(async (row) => {
+        const key = row.owner + "/" + row.repo;
+        try {
+          const data = await fetchJson("https://api.github.com/repos/" + key);
+          if (typeof data.stargazers_count === "number") {
+            liveCounts[key] = data.stargazers_count;
+            liveHits += 1;
+          }
+        } catch { /* keep cache */ }
+      }));
+      if (liveHits) render(kit.repos, liveCounts, "live");
+    })();
+
+    const links = [...document.querySelectorAll(".nav a")];
+    const secs = links.map((a) => document.getElementById(a.dataset.sec));
+    const spy = () => {
+      const y = window.scrollY + 72;
+      let on = secs[0];
+      for (const s of secs) if (s && s.offsetTop <= y) on = s;
+      links.forEach((a) => a.classList.toggle("is-on", a.dataset.sec === on.id));
+    };
+    spy();
+    window.addEventListener("scroll", spy, { passive: true });
+  </script>
+</body>
+</html>

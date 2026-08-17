@@ -1,0 +1,61 @@
+{
+  "prompt": "Install VibeSetup on this computer. Read https://raw.githubusercontent.com/youtextme/vibeSetup/main/INSTALL.md and follow it exactly. Detect my OS and whether this is Cursor, Devin, OpenClaw, Claude Code, or another agent. Pin the kit. Write a tiny frozen AGENTS.md. Enable Ralph with a max-iteration cap. Do not ask questions unless a paid secret is missing. When finished, list what you installed and where.",
+  "repos": [
+    {
+      "n": 1,
+      "job": "How agents ship",
+      "name": "Superpowers",
+      "owner": "obra",
+      "repo": "superpowers",
+      "url": "https://github.com/obra/superpowers"
+    },
+    {
+      "n": 2,
+      "job": "Production engineering skills",
+      "name": "Agent Skills",
+      "owner": "addyosmani",
+      "repo": "agent-skills",
+      "url": "https://github.com/addyosmani/agent-skills"
+    },
+    {
+      "n": 3,
+      "job": "Clarify requirements first",
+      "name": "Grill Me",
+      "owner": "mattpocock",
+      "repo": "skills",
+      "url": "https://github.com/mattpocock/skills"
+    },
+    {
+      "n": 4,
+      "job": "Design and testing",
+      "name": "Anthropic Skills",
+      "owner": "anthropics",
+      "repo": "skills",
+      "url": "https://github.com/anthropics/skills"
+    },
+    {
+      "n": 5,
+      "job": "Loop until done",
+      "name": "Ralph",
+      "owner": "snarktank",
+      "repo": "ralph",
+      "url": "https://github.com/snarktank/ralph"
+    },
+    {
+      "n": 6,
+      "job": "Catch store rejects",
+      "name": "App Store",
+      "owner": "safaiyeh",
+      "repo": "app-store-review-skill",
+      "url": "https://github.com/safaiyeh/app-store-review-skill"
+    },
+    {
+      "n": 7,
+      "job": "Track agent spend",
+      "name": "ccusage",
+      "owner": "ccusage",
+      "repo": "ccusage",
+      "url": "https://github.com/ccusage/ccusage"
+    }
+  ]
+}

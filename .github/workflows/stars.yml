@@ -1,0 +1,53 @@
+name: stars
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - kit.json
+      - .github/workflows/stars.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch live stargazer counts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          kit = json.load(open("kit.json"))
+          token = os.environ.get("GH_TOKEN", "")
+          counts = {}
+          for row in kit["repos"]:
+              key = f"{row['owner']}/{row['repo']}"
+              req = urllib.request.Request(
+                  f"https://api.github.com/repos/{key}",
+                  headers={
+                      "Accept": "application/vnd.github+json",
+                      "User-Agent": "vibeSetup-stars",
+                      **({"Authorization": f"Bearer {token}"} if token else {}),
+                  },
+              )
+              with urllib.request.urlopen(req) as res:
+                  counts[key] = json.load(res)["stargazers_count"]
+          from datetime import datetime, timezone
+          out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "counts": counts}
+          json.dump(out, open("stars.json", "w"), indent=2)
+          open("stars.json", "a").write("\n")
+          print(out)
+          PY
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stars.json
+          git diff --cached --quiet || git commit -m "Refresh live GitHub star counts"
+          git push
