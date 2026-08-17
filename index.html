@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>VibeSetup</title>
+  <meta name="theme-color" content="#000000" />
   <meta name="description" content="One prompt. Any machine. Cursor, Devin, OpenClaw, and Claude install the same pinned kit and run like objective runners." />
   <meta property="og:title" content="VibeSetup" />
   <meta property="og:description" content="One prompt. Any machine. Agents that finish." />
@@ -11,7 +12,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <style>
     :root {
-      --bleed: clamp(28px, 5.5vw, 96px);
+      --bleed: clamp(40px, 8vw, 140px);
       --fg: #1d1d1f;
       --muted: #6e6e73;
       --line: #d2d2d7;
@@ -19,12 +20,16 @@
       --card: #ffffff;
       --blue: #0071e3;
       --blue-press: #0077ed;
-      --nav-h: 58px;
+      --nav: rgba(22, 22, 23, 0.8);
+      --nav-h: 52px;
       --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       * { animation: none !important; transition: none !important; }
@@ -46,67 +51,133 @@
     a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
     .bleed {
-      padding-left: var(--bleed);
-      padding-right: var(--bleed);
+      padding-left: max(var(--bleed), env(safe-area-inset-left, 0px));
+      padding-right: max(var(--bleed), env(safe-area-inset-right, 0px));
       width: 100%;
     }
 
-    /* —— Nav: three equal targets, full width —— */
+    /* —— Apple global header —— */
     .nav {
       position: sticky;
       top: 0;
-      z-index: 40;
+      z-index: 50;
       height: var(--nav-h);
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      background: rgba(245, 245, 247, 0.78);
+      background: var(--nav);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--line);
     }
-    .nav a {
+    .nav-inner {
+      height: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 15px;
-      font-weight: 500;
-      letter-spacing: -0.016em;
-      text-decoration: none;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
+      justify-content: space-between;
+      gap: 24px;
     }
-    .nav a:hover { color: var(--fg); }
-    .nav a.is-on {
-      color: var(--fg);
-      border-bottom-color: var(--fg);
+    .wordmark {
+      color: #f5f5f7;
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.028em;
+      line-height: 1;
+      text-decoration: none;
+      flex: 0 0 auto;
+    }
+    .wordmark:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-icons {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-icon {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.56);
+      text-decoration: none;
+      border-radius: 10px;
+    }
+    .nav-icon svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+    .nav-icon:hover,
+    .nav-icon:focus-visible {
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .nav-icon:focus-visible {
+      outline: 2px solid #2997ff;
+      outline-offset: 2px;
+    }
+    .nav-icon.is-on {
+      color: #fff;
+    }
+    .nav-icon.is-on::after {
+      content: "";
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      margin-left: -2px;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .nav-icon .tip {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: #1d1d1f;
+      color: #f5f5f7;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms var(--ease), transform 120ms var(--ease);
+    }
+    .nav-icon:hover .tip,
+    .nav-icon:focus-visible .tip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     section {
-      scroll-margin-top: calc(var(--nav-h) + 12px);
+      scroll-margin-top: calc(var(--nav-h) + 28px);
     }
 
     .kicker {
       display: block;
       font-size: 12px;
       font-weight: 600;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--muted);
-      margin: 0 0 18px;
+      margin: 0 0 16px;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(56px, 9vw, 120px);
+      font-size: clamp(56px, 8.5vw, 112px);
       font-weight: 600;
       letter-spacing: -0.045em;
-      line-height: 0.95;
+      line-height: 0.96;
     }
 
     h2 {
-      margin: 0 0 28px;
-      font-size: clamp(40px, 6vw, 72px);
+      margin: 0 0 8px;
+      font-size: clamp(40px, 5.6vw, 64px);
       font-weight: 600;
       letter-spacing: -0.035em;
       line-height: 1.05;
@@ -114,8 +185,8 @@
 
     .lede {
       margin: 28px 0 0;
-      max-width: 42em;
-      font-size: clamp(21px, 2.2vw, 28px);
+      max-width: 38em;
+      font-size: clamp(21px, 2.1vw, 28px);
       line-height: 1.285;
       font-weight: 400;
       letter-spacing: 0.011em;
@@ -123,14 +194,13 @@
     }
     .lede.muted { color: var(--muted); }
 
-    /* —— Describe —— */
-    #describe { padding: 72px 0 96px; }
+    #describe { padding: 80px 0 112px; }
 
     .prompt {
       margin-top: 56px;
       background: var(--card);
-      border-radius: 22px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.04);
+      border-radius: 28px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04);
       overflow: hidden;
     }
     .prompt-bar {
@@ -138,7 +208,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 18px 28px;
+      padding: 20px 32px;
       border-bottom: 1px solid var(--line);
     }
     .prompt-bar strong {
@@ -165,27 +235,27 @@
     .copy.is-done { background: #1d1d1f; }
     .prompt pre {
       margin: 0;
-      padding: 32px 28px 36px;
+      padding: 36px 32px 40px;
       white-space: pre-wrap;
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: clamp(15px, 1.35vw, 19px);
+      font-size: clamp(15px, 1.3vw, 19px);
       line-height: 1.5;
       letter-spacing: -0.02em;
       color: var(--fg);
     }
 
     .hosts {
-      margin-top: 28px;
+      margin-top: 24px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 16px;
     }
     .host {
       background: var(--card);
-      border-radius: 18px;
-      padding: 28px 26px 30px;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
-      min-height: 168px;
+      border-radius: 22px;
+      padding: 32px 28px 34px;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+      min-height: 176px;
     }
     .host h3 {
       margin: 0 0 10px;
@@ -197,33 +267,33 @@
       margin: 0;
       color: var(--muted);
       font-size: 16px;
-      line-height: 1.4;
+      line-height: 1.42;
     }
 
-    /* —— Kit —— */
     #kit {
-      padding: 88px 0 96px;
+      padding: 96px 0 112px;
       background: #fff;
     }
     .kit-head {
       display: flex;
-      align-items: baseline;
+      align-items: flex-end;
       justify-content: space-between;
       gap: 24px;
       flex-wrap: wrap;
+      margin-bottom: 36px;
     }
     .live {
       font-size: 14px;
       color: var(--muted);
       font-weight: 400;
       letter-spacing: 0;
+      padding-bottom: 10px;
     }
     .live b { color: var(--fg); font-weight: 500; }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
     }
     thead th {
       text-align: left;
@@ -232,17 +302,17 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--muted);
-      padding: 0 0 18px;
+      padding: 0 24px 16px 0;
       border-bottom: 1px solid var(--line);
     }
     tbody td {
-      padding: 28px 16px 28px 0;
+      padding: 30px 24px 30px 0;
       border-bottom: 1px solid var(--line);
       vertical-align: baseline;
     }
     tbody tr:last-child td { border-bottom: 0; }
     .num {
-      width: 7%;
+      width: 8%;
       font-variant-numeric: tabular-nums;
       color: var(--muted);
       font-size: clamp(22px, 2vw, 28px);
@@ -251,16 +321,14 @@
     }
     .job {
       width: 46%;
-      font-size: clamp(22px, 2.4vw, 32px);
+      font-size: clamp(22px, 2.3vw, 32px);
       font-weight: 500;
       letter-spacing: -0.03em;
       line-height: 1.15;
     }
-    .repo {
-      width: 47%;
-    }
+    .repo { width: 46%; }
     .repo a {
-      font-size: clamp(22px, 2.4vw, 32px);
+      font-size: clamp(22px, 2.3vw, 32px);
       font-weight: 600;
       letter-spacing: -0.03em;
       color: var(--blue);
@@ -275,15 +343,13 @@
       letter-spacing: -0.02em;
       white-space: nowrap;
     }
-    .stars::before { content: ""; }
 
-    /* —— Details —— */
-    #details { padding: 88px 0 120px; }
+    #details { padding: 96px 0 128px; }
     .detail {
       display: grid;
-      grid-template-columns: 7% 93%;
-      gap: 0 16px;
-      padding: 40px 0;
+      grid-template-columns: 72px 1fr;
+      gap: 0 28px;
+      padding: 44px 0;
       border-top: 1px solid var(--line);
     }
     .detail:last-child { border-bottom: 1px solid var(--line); }
@@ -292,7 +358,7 @@
       color: var(--muted);
       font-size: 22px;
       font-weight: 500;
-      padding-top: 6px;
+      padding-top: 8px;
     }
     .detail h3 {
       margin: 0 0 6px;
@@ -308,35 +374,63 @@
     }
     .detail p {
       margin: 0;
-      max-width: 58em;
-      font-size: clamp(17px, 1.45vw, 21px);
+      max-width: 52em;
+      font-size: clamp(17px, 1.4vw, 21px);
       line-height: 1.47;
       letter-spacing: -0.016em;
     }
 
     footer {
-      padding: 28px 0 48px;
+      padding: 36px 0 max(56px, env(safe-area-inset-bottom, 0px));
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12px;
     }
 
     @media (max-width: 820px) {
-      #describe { padding-top: 48px; }
+      :root { --bleed: clamp(24px, 6vw, 40px); --nav-h: 48px; }
+      .wordmark { font-size: 19px; }
+      #describe { padding-top: 56px; }
       .hosts { grid-template-columns: 1fr; }
-      .num, .detail { grid-template-columns: 1fr; }
-      .detail .n { margin-bottom: 8px; }
-      tbody td { padding: 20px 12px 20px 0; }
+      .detail { grid-template-columns: 1fr; gap: 8px; }
       .job, .repo a { font-size: 20px; }
       .stars { display: block; margin: 8px 0 0; }
+      tbody td { padding: 22px 12px 22px 0; }
     }
   </style>
 </head>
 <body>
-  <nav class="nav" aria-label="Sections">
-    <a href="#describe" data-sec="describe">Describe</a>
-    <a href="#kit" data-sec="kit">Kit</a>
-    <a href="#details" data-sec="details">Details</a>
-  </nav>
+  <header class="nav">
+    <div class="nav-inner bleed">
+      <a class="wordmark" href="#describe">VibeSetup</a>
+      <nav class="nav-icons" aria-label="Sections">
+        <a class="nav-icon" href="#describe" data-sec="describe" aria-label="Describe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="6" y="3.5" width="12" height="17" rx="2.2"/>
+            <path d="M9 8.5h6M9 12h6M9 15.5h3.5"/>
+          </svg>
+          <span class="tip">Describe</span>
+        </a>
+        <a class="nav-icon" href="#kit" data-sec="kit" aria-label="Kit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="4.5" y="4.5" width="6.2" height="6.2" rx="1.3"/>
+            <rect x="13.3" y="4.5" width="6.2" height="6.2" rx="1.3"/>
+            <rect x="4.5" y="13.3" width="6.2" height="6.2" rx="1.3"/>
+            <rect x="13.3" y="13.3" width="6.2" height="6.2" rx="1.3"/>
+          </svg>
+          <span class="tip">Kit</span>
+        </a>
+        <a class="nav-icon" href="#details" data-sec="details" aria-label="Details">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="6.2" cy="7" r="1.05" fill="currentColor" stroke="none"/>
+            <circle cx="6.2" cy="12" r="1.05" fill="currentColor" stroke="none"/>
+            <circle cx="6.2" cy="17" r="1.05" fill="currentColor" stroke="none"/>
+            <path d="M9.5 7h8.2M9.5 12h8.2M9.5 17h5.5"/>
+          </svg>
+          <span class="tip">Details</span>
+        </a>
+      </nav>
+    </div>
+  </header>
 
   <section id="describe" class="bleed">
     <span class="kicker">Describe</span>
@@ -591,10 +685,10 @@
       if (liveHits) render(kit.repos, liveCounts, "live");
     })();
 
-    const links = [...document.querySelectorAll(".nav a")];
+    const links = [...document.querySelectorAll(".nav-icon")];
     const secs = links.map((a) => document.getElementById(a.dataset.sec));
     const spy = () => {
-      const y = window.scrollY + 72;
+      const y = window.scrollY + 80;
       let on = secs[0];
       for (const s of secs) if (s && s.offsetTop <= y) on = s;
       links.forEach((a) => a.classList.toggle("is-on", a.dataset.sec === on.id));
