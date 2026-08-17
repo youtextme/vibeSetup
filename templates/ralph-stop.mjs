@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 /**
  * Cursor stop hook for VibeSetup / Ralph.
- * Keep going until tests pass, a done file exists, or loop_limit is hit.
- * Official Cursor stop output: followup_message (not extra system prompt).
+ * Armed only when `.cursor/ralph/active` exists. Unarmed output is {}.
+ * When armed: keep going until tests pass, a done file exists, or the
+ * iteration cap is hit. Official Cursor stop output: followup_message.
  */
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 
 const root = process.env.CURSOR_PROJECT_DIR || process.cwd();
 const dir = join(root, ".cursor", "ralph");
+const active = join(dir, "active");
 const done = join(dir, "done");
 const countFile = join(dir, "iterations");
 const max = Number(process.env.VIBESETUP_MAX_ITERATIONS || 12);
 
-mkdirSync(dir, { recursive: true });
-
-if (existsSync(done)) {
+if (!existsSync(active) || existsSync(done)) {
   process.stdout.write(JSON.stringify({}));
   process.exit(0);
 }
