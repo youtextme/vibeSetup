@@ -12,7 +12,7 @@
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <style>
     :root {
-      --bleed: clamp(40px, 8vw, 140px);
+      --bleed: 10vw;
       --fg: #1d1d1f;
       --muted: #6e6e73;
       --line: #d2d2d7;
@@ -51,8 +51,8 @@
     a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
     .bleed {
-      padding-left: max(var(--bleed), env(safe-area-inset-left, 0px));
-      padding-right: max(var(--bleed), env(safe-area-inset-right, 0px));
+      padding-left: max(10vw, env(safe-area-inset-left, 0px));
+      padding-right: max(10vw, env(safe-area-inset-right, 0px));
       width: 100%;
     }
 
@@ -387,7 +387,7 @@
     }
 
     @media (max-width: 820px) {
-      :root { --bleed: clamp(24px, 6vw, 40px); --nav-h: 48px; }
+      :root { --nav-h: 48px; }
       .wordmark { font-size: 19px; }
       #describe { padding-top: 56px; }
       .hosts { grid-template-columns: 1fr; }
