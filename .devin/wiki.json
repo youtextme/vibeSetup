@@ -1,0 +1,5 @@
+{
+  "playbooks": [".devin/playbooks/ship-capability.md"],
+  "knowledge": [".devin/knowledge/lint.md", ".devin/knowledge/test.md"],
+  "rules": [".devin/global_rules.md"]
+}
