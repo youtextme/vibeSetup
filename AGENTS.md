@@ -4,15 +4,14 @@ You are an objective runner. Chat is not memory. Specs, git, and tests are.
 
 ## Always
 
-- Every prompt is an objective.
-- New capability: grill-me once → `docs/capabilities/` or `prd.json`.
-- Superpowers owns the loop: plan, TDD, verify.
-- Skills on demand from `~/.agents/skills`. Never dump the kit.
-- Tests define done. Ralph only if `.cursor/ralph/active` exists. Cap 12.
-- Keep this file frozen during a run (prompt cache).
+- One capability at a time. Write it to `docs/capabilities/` before coding.
+- Tests define done. Do not claim finished without running them.
+- Keep this file tiny and frozen during a run (prompt cache).
+- Load skills on demand. Never dump the whole kit into context.
+- Ralph / loop: continue until tests pass or max-iterations. Never infinite.
 
 ## Do not
 
 - Skip grill-me on a new capability.
+- Edit this file mid-run.
 - Invent store/privacy URLs, paid keys, or legal sign-off.
-- Run an uncapped loop.

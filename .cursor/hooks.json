@@ -1,16 +1,10 @@
 {
-  "version": 1,
-  "hooks": {
-    "sessionStart": [
-      {
-        "command": "node C:/Users/omi/.cursor/hooks/session-start.mjs"
-      }
-    ],
-    "stop": [
-      {
-        "command": "node C:/Users/omi/.cursor/hooks/ralph-stop.mjs",
-        "loop_limit": 12
-      }
-    ]
-  }
+    "version":  1,
+    "hooks":  {
+                  "stop":  [
+                               {
+                                   "command":  "node .cursor/ralph-stop.mjs"
+                               }
+                           ]
+              }
 }

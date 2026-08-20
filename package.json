@@ -1,0 +1,8 @@
+{
+  "name": "vibesetup",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/smoke-test.mjs"
+  }
+}
