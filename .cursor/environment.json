@@ -1,0 +1,4 @@
+{
+  "name": "VibeSetup",
+  "install": "bash scripts/cloud-install.sh"
+}
