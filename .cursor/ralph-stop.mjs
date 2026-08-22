@@ -15,6 +15,7 @@ import { join } from "node:path";
 
 const MAX = Math.max(1, Number(process.env.VIBESETUP_MAX_ITERATIONS) || 12);
 const TEST_TIMEOUT_MS = Math.max(1000, Number(process.env.VIBESETUP_TEST_TIMEOUT_MS) || 90000);
+const STDIN_TIMEOUT_MS = Math.max(100, Number(process.env.VIBESETUP_STDIN_TIMEOUT_MS) || 2000);
 
 function paths(root) {
   const dir = join(root, ".cursor", "ralph");
@@ -31,12 +32,33 @@ function followup(message) {
   process.exit(0);
 }
 
+// Never block on stdin: a TTY or an open-but-unwritten pipe would hang the
+// agent until Cursor's own hook timeout fires.
 function readStdin() {
-  try {
-    return readFileSync(0, "utf8");
-  } catch {
-    return "";
-  }
+  if (process.stdin.isTTY) return Promise.resolve("");
+  return new Promise((resolve) => {
+    let data = "";
+    let settled = false;
+    const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      process.stdin.pause();
+      resolve(value);
+    };
+    const timer = setTimeout(() => finish(""), STDIN_TIMEOUT_MS);
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => {
+      data += chunk;
+    });
+    process.stdin.on("end", () => {
+      clearTimeout(timer);
+      finish(data);
+    });
+    process.stdin.on("error", () => {
+      clearTimeout(timer);
+      finish("");
+    });
+  });
 }
 
 function testCommand(root) {
@@ -67,26 +89,30 @@ if (flag === "--arm" || flag === "--disarm" || flag === "--status") {
 }
 
 try {
-  let payload = {};
+  let payload = null;
   try {
-    payload = JSON.parse(readStdin() || "{}");
+    payload = JSON.parse((await readStdin()) || "null");
   } catch {
-    payload = {};
+    payload = null;
   }
+
+  // No readable payload means no readable `status` or `loop_count`, so there is
+  // no safe way to bound a follow-up. Stop.
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) stop();
 
   const root =
     payload.workspace_roots?.[0] || process.env.CURSOR_PROJECT_DIR || process.cwd();
   const { dir, active, done } = paths(root);
 
   // Only ever continue a turn that finished cleanly.
-  if (payload.status && payload.status !== "completed") stop();
+  if (payload.status !== "completed") stop();
 
   // Loop is opt-in. Without this file the hook is a no-op.
   if (!existsSync(active) && process.env.VIBESETUP_RALPH !== "1") stop();
   if (existsSync(done)) stop();
 
-  const loop = Number(payload.loop_count) || 0;
-  if (loop + 1 >= MAX) {
+  const loop = Number(payload.loop_count);
+  if (!Number.isFinite(loop) || loop < 0 || loop + 1 >= MAX) {
     // Hard cap: disarm so the next turn is a normal Cursor turn.
     rmSync(active, { force: true });
     stop();

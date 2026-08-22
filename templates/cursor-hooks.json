@@ -5,7 +5,7 @@
       {
         "command": "node .cursor/ralph-stop.mjs",
         "loop_limit": 12,
-        "timeout": 120000
+        "timeout": 120
       }
     ]
   }
