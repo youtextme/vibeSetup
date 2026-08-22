@@ -13,3 +13,13 @@ Install VibeSetup on this computer. Read INSTALL.md from https://raw.githubuserc
 ```
 
 The agent follows [INSTALL.md](INSTALL.md). The kit list lives in [kit.json](kit.json). Stars on the page are live from GitHub.
+
+## Cursor Cloud (all repositories)
+
+Attach a team Cloud environment to every repo and set install to:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/youtextme/vibeSetup/main/scripts/cloud-install-remote.sh | bash
+```
+
+Add enforced **Team Rules** from `templates/AGENTS.md` or Remote Rule `youtextme/vibeSetup` for every prompt. See [INSTALL.md §6](INSTALL.md).
