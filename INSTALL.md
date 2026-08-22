@@ -44,9 +44,12 @@ Never paste Superpowers or Addy into User Rules. Point at skills. Huge always-on
 
 ### Cursor
 
-- Copy `templates/cursor-hooks.json` → `.cursor/hooks.json` (must be **in the repo** so Cloud agents see it).
+- Copy `templates/cursor-hooks.json` → `.cursor/hooks.json` (must be **in the repo** so Cloud agents see it). Keep the explicit `loop_limit`; Cursor's own default is 5.
 - Copy `templates/ralph-stop.mjs` → `.cursor/ralph-stop.mjs`
 - Create `.cursor/ralph/` (gitkeep). Done file is `.cursor/ralph/done`.
+- The loop is **opt-in**. `node .cursor/ralph-stop.mjs --arm` starts a run, `--disarm` stops it, `--status` shows state. Disarmed, the stop hook is a no-op and normal Cursor chats end normally. Never ship a stop hook that returns a follow-up unconditionally — that is an agent that never stops.
+- Gitignore `.cursor/ralph/active`, `.cursor/ralph/done`. The cap comes from the payload's `loop_count`, not a counter file, so it resets per conversation.
+- The hook only loops while `npm test` (or the project's real test script) is red and reachable. No test script, a killed runner, or a timeout means stop, not loop.
 - If the official Cursor `ralph-loop` plugin is available, install it **instead of** duplicating stop logic — do not run two loops.
 - Optional: `/loop` for babysitting; still keep `loop_limit`.
 

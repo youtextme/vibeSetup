@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node scripts/smoke-test.mjs"
+    "test": "node scripts/smoke-test.mjs",
+    "ralph:arm": "node .cursor/ralph-stop.mjs --arm",
+    "ralph:disarm": "node .cursor/ralph-stop.mjs --disarm",
+    "ralph:status": "node .cursor/ralph-stop.mjs --status"
   }
 }

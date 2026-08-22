@@ -4,3 +4,4 @@ Thumbs.db
 node_modules/
 .cursor/ralph/done
 .cursor/ralph/iterations
+.cursor/ralph/active

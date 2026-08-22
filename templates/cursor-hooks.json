@@ -3,7 +3,9 @@
   "hooks": {
     "stop": [
       {
-        "command": "node .cursor/ralph-stop.mjs"
+        "command": "node .cursor/ralph-stop.mjs",
+        "loop_limit": 12,
+        "timeout": 120
       }
     ]
   }
