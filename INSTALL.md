@@ -86,7 +86,32 @@ progress.txt         # append-only
 - After planning, write `plan.md` and start a **new** thread: “continue from plan.md”.
 - Run `npx ccusage` (and Cursor’s usage UI) so spend is visible.
 
-## 6. Done
+## 6. Cursor Cloud (every repository)
+
+Cloud agents read `AGENTS.md`, `.cursor/rules`, and `.cursor/hooks.json` from the checked-out repo. Skills can live globally on the VM.
+
+### One team environment for all repos
+
+1. Open [Cloud Agents → Environments](https://cursor.com/dashboard/cloud-agents#environments).
+2. Create or edit a **team** environment. Add every repository you use with Cloud Agents (multi-repo environment).
+3. Set **install** to fetch and run VibeSetup on each Build:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/youtextme/vibeSetup/main/scripts/cloud-install-remote.sh | bash
+```
+
+4. Run a Build. Future agents on any attached repo boot with global skills and bootstrapped project files when missing.
+5. **Team Rules** (optional, strongest cross-repo signal): Dashboard → Team content → Rules. Add enforced text from `templates/AGENTS.md`, or import Remote Rule from `https://github.com/youtextme/vibeSetup` (`templates/core.mdc`). Team Rules apply to every repository and every prompt.
+
+Page: [youtextme.github.io/vibeSetup](https://youtextme.github.io/vibeSetup/)
+
+### This repo
+
+`vibeSetup` commits `.cursor/environment.json` with `bash scripts/cloud-install.sh`. Prefer the team environment above so **all** repos get the kit — not only repos that contain vibeSetup files.
+
+Resolution order: repo `.cursor/environment.json` → personal environment → team environment. A team environment without a per-repo file still runs install on every Build for attached repos.
+
+## 7. Done
 
 Print a table:
 
