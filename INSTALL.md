@@ -16,6 +16,26 @@ If this file is missing locally, fetch:
 
 Also fetch `kit.json` from the same repo.
 
+## 0.5 Install Prompt OS (required)
+
+Prompt OS is the **constitution layer** — VibeSetup skills are the toolkit. Without Prompt OS, agents fall back to stale rules (including deprecated Jillu banner).
+
+Run once per machine **and** ensure the **project repo** is wired (Cursor Cloud reads repo `.cursor/`, not only `~/.cursor/`):
+
+```bash
+bash scripts/install-prompt-os.sh
+```
+
+This installs `~/.agents/prompt-os/` + `~/.agents/router/PROMPT-ROUTER.md` from [prompt-operating-system](https://github.com/youtextme/prompt-operating-system) and writes:
+
+| Host | Repo path |
+|------|-----------|
+| Cursor / Cloud | `.cursor/rules/00-prompt-os.mdc` |
+| Devin | `.devin/knowledge/prompt-os.md` + `wiki.json` |
+| opencode | `~/.config/opencode/opencode.jsonc` → router |
+
+Verify: `test -f ~/.agents/router/PROMPT-ROUTER.md && test -f .cursor/rules/00-prompt-os.mdc`
+
 ## 1. Pin the kit (once)
 
 Prefer `npx skills add <owner/repo>` when `npx` works. Otherwise clone at a pinned `main` SHA into the host skills folder. Do **not** `git pull` skills on every session later — pin and review.
@@ -35,6 +55,7 @@ Install only:
 Copy `templates/AGENTS.md` from this repo to the project root as `AGENTS.md` if missing. Do not grow it past ~80 lines.
 
 Cursor: copy `templates/core.mdc` to `.cursor/rules/core.mdc`.
+Copy `templates/00-prompt-os.mdc` to `.cursor/rules/00-prompt-os.mdc` if Prompt OS install has not already (step 0.5).
 
 Never paste Superpowers or Addy into User Rules. Point at skills. Huge always-on text breaks prompt cache and raises cost.
 
@@ -55,6 +76,7 @@ Never paste Superpowers or Addy into User Rules. Point at skills. Huge always-on
 
 ### Devin
 
+- Run `bash scripts/install-prompt-os.sh` so `.devin/knowledge/prompt-os.md` matches v3.3 STATUS LAW.
 - Do not install a bash while-loop.
 - Knowledge items named exactly **`lint`** and **`test`** pointing at real commands.
 - Playbook: “Ship a capability — grill-me once, implement, do not finish until `test` is green.”

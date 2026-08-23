@@ -1,0 +1,4 @@
+{
+  "install": "bash scripts/cloud-install-prompt-os.sh",
+  "start": "bash -c 'test -f \"$HOME/.agents/prompt-os/enforce/gateway.mjs\" && node \"$HOME/.agents/prompt-os/enforce/gateway.mjs\" >>\"$HOME/.agents/prompt-os/gateway.log\" 2>&1 & disown || true'"
+}
