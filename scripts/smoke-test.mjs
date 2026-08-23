@@ -16,6 +16,9 @@ const required = [
   ".cursor/hooks.json",
   ".cursor/ralph-stop.mjs",
   ".cursor/rules/core.mdc",
+  ".cursor/environment.json",
+  "scripts/cloud-install.sh",
+  "scripts/cloud-start.sh",
   "templates/AGENTS.md",
   "templates/core.mdc",
   "templates/cursor-hooks.json",
@@ -48,10 +51,28 @@ if (!Number.isInteger(stopHook.loop_limit) || stopHook.loop_limit < 1) {
   process.exit(1);
 }
 
+const envJson = readJson(join(root, ".cursor/environment.json"));
+if (String(envJson.install || "").trim() !== "bash scripts/cloud-install.sh") {
+  console.error("environment.json install must run bash scripts/cloud-install.sh");
+  process.exit(1);
+}
+if (String(envJson.start || "").trim() !== "bash scripts/cloud-start.sh") {
+  console.error("environment.json start must run bash scripts/cloud-start.sh");
+  process.exit(1);
+}
+
 // The stop hook must not hijack ordinary Cursor turns. Exercise it against a
 // scratch workspace so this suite never re-enters the hook's own test run.
 const scratch = mkdtempSync(join(tmpdir(), "vibesetup-stop-"));
 const scratchActive = join(scratch, ".cursor", "ralph", "active");
+
+function hookEnv() {
+  const env = { ...process.env, VIBESETUP_RALPH: "", VIBESETUP_STDIN_TIMEOUT_MS: "500" };
+  // Cloud agents sometimes inject npm_config_prefix=/ which breaks `npm test`.
+  delete env.npm_config_prefix;
+  delete env.NPM_CONFIG_PREFIX;
+  return env;
+}
 
 function runStopHookRaw(input) {
   const res = spawnSync(process.execPath, [join(root, ".cursor/ralph-stop.mjs")], {
@@ -59,7 +80,7 @@ function runStopHookRaw(input) {
     input,
     encoding: "utf8",
     timeout: 20000,
-    env: { ...process.env, VIBESETUP_RALPH: "", VIBESETUP_STDIN_TIMEOUT_MS: "500" },
+    env: hookEnv(),
   });
   return { status: res.status, out: (res.stdout || "").trim() };
 }
@@ -117,7 +138,7 @@ try {
         cwd: scratch,
         encoding: "utf8",
         timeout: 8000,
-        env: { ...process.env, VIBESETUP_RALPH: "", VIBESETUP_STDIN_TIMEOUT_MS: "500" },
+        env: hookEnv(),
       }
     );
     const idle = existsSync(log) ? readFileSync(log, "utf8").trim() : "";

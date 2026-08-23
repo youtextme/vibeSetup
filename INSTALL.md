@@ -79,14 +79,29 @@ prd.json             # optional Ralph stories
 progress.txt         # append-only
 ```
 
-## 5. Cost
+## 5. Cursor Cloud (parity with This PC Prompt OS)
+
+Cloud agents do **not** inherit your PC’s `~/.agents/prompt-os`. They install it during environment setup:
+
+- `.cursor/environment.json` → `bash scripts/cloud-install.sh` (same kernel as [prompt-operating-system](https://github.com/youtextme/prompt-operating-system))
+- `bash scripts/cloud-start.sh` starts the POS gateway on `:8555` each boot
+
+PC one-liner remains:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/youtextme/prompt-operating-system/main/install.sh | bash
+```
+
+Optional Cloud kit pin: `PROMPT_OS_WITH_KIT=1` before install.
+
+## 6. Cost
 
 - Do not edit `AGENTS.md` during a Ralph run.
 - Plan on a cheaper model; implement on a frontier model.
 - After planning, write `plan.md` and start a **new** thread: “continue from plan.md”.
 - Run `npx ccusage` (and Cursor’s usage UI) so spend is visible.
 
-## 6. Done
+## 7. Done
 
 Print a table:
 
