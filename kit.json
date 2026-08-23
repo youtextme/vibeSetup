@@ -1,6 +1,14 @@
 {
-  "prompt": "Install VibeSetup on this computer. Read INSTALL.md from https://raw.githubusercontent.com/youtextme/vibeSetup/main/INSTALL.md or from a local vibeSetup folder. Follow it exactly. Detect my OS and whether this is Cursor, Devin, OpenClaw, Claude Code, or another agent. Pin the kit. Write a tiny frozen AGENTS.md. Enable Ralph with a max-iteration cap. Do not ask questions unless a paid secret is missing. When finished, list what you installed and where.",
+  "prompt": "Install VibeSetup on this computer. Read INSTALL.md from https://raw.githubusercontent.com/youtextme/vibeSetup/main/INSTALL.md or from a local vibeSetup folder. Follow it exactly. Run bash scripts/install-prompt-os.sh (Prompt OS v3.3). Detect my OS and whether this is Cursor, Devin, OpenClaw, Claude Code, or another agent. Pin the kit. Write a tiny frozen AGENTS.md. Enable Ralph with a max-iteration cap. Do not ask questions unless a paid secret is missing. When finished, list what you installed and where.",
   "repos": [
+    {
+      "n": 0,
+      "job": "Prompt constitution — every IDE/CLI",
+      "name": "Prompt OS",
+      "owner": "youtextme",
+      "repo": "prompt-operating-system",
+      "url": "https://github.com/youtextme/prompt-operating-system"
+    },
     {
       "n": 1,
       "job": "How agents ship",
