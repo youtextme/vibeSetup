@@ -1,13 +1,13 @@
 {
-  "updated": "2026-09-13T15:16:09Z",
+  "updated": "2026-09-13T19:59:03Z",
   "counts": {
     "youtextme/prompt-operating-system": 0,
-    "obra/superpowers": 286065,
-    "addyosmani/agent-skills": 93894,
-    "mattpocock/skills": 260998,
-    "anthropics/skills": 176071,
-    "snarktank/ralph": 21775,
-    "safaiyeh/app-store-review-skill": 341,
-    "ccusage/ccusage": 18524
+    "obra/superpowers": 286132,
+    "addyosmani/agent-skills": 93959,
+    "mattpocock/skills": 261145,
+    "anthropics/skills": 176099,
+    "snarktank/ralph": 21774,
+    "safaiyeh/app-store-review-skill": 342,
+    "ccusage/ccusage": 18530
   }
 }
